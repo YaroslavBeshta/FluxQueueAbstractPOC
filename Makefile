@@ -12,3 +12,10 @@ run-tg:
 
 run-notif:
 	python apps/notifications/main.py
+
+
+run:
+	docker compose -f prod-postgres-docker-compose.yml up -d --build
+
+stop:
+	docker compose -f prod-postgres-docker-compose.yml stop
