@@ -1,5 +1,8 @@
 # Infinitely Scalable Market Research Orchestration POC
 
+![Architecture Diagram](diagram.png)
+
+
 ## Abstract
 
 This repository contains a proof of concept for an orchestration structure that targets elastic, cost aware market research at scale. It demonstrates a modular data and compute pipeline that can ingest heterogeneous ticker streams, derive indicators, generate action calls, and publish signals to downstream consumers. The POC validates interfaces, reliability patterns, and scaling levers. It is not production ready. Do not use in production.
