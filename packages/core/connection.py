@@ -33,6 +33,10 @@ def create_connection_string():
 
 
 SQLALCHEMY_DATABASE_URL = create_connection_string()
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL
+    pool_recycle=3600,
+    pool_pre_ping=True,
+)
 Session = sessionmaker(bind=engine)
 session = Session()
