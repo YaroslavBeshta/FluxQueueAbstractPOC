@@ -26,6 +26,7 @@ def main():
     )
     schedule.every(1).minutes.do(unmute_market_subscriptions)
     schedule.every(1).minutes.do(unmute_token_subscriptions)
+
     while True:
         schedule.run_pending()
         time.sleep(1)

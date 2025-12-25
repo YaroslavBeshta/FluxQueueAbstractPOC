@@ -1,11 +1,17 @@
 import os
 from contextlib import contextmanager
+from pathlib import Path
 
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-load_dotenv()
+# Try loading .env.prod first, fallback to .env
+env_prod_path = Path('.env.prod')
+if env_prod_path.exists():
+    load_dotenv('.env.prod')
+else:
+    load_dotenv()
 
 
 @contextmanager
@@ -29,7 +35,8 @@ def create_connection_string():
     _database = os.getenv("POSTGRES_DB")
     _driver = os.getenv("DB_DRIVER") or "postgresql"
 
-    return f"{_driver}://{_user}:{_password}@{_host}:{_port}/{_database}"
+    connection_string = f"{_driver}://{_user}:{_password}@{_host}:{_port}/{_database}"
+    return connection_string
 
 
 SQLALCHEMY_DATABASE_URL = create_connection_string()

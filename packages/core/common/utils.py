@@ -33,7 +33,6 @@ def send_telegram_log(message, chat_id=DEFAULT_CHAT_ID, reply_markup=None):
         "disable_web_page_preview": True,
 
     }
-    print(payload)
     if reply_markup:
         payload["reply_markup"] = reply_markup
     url = f"https://api.telegram.org/bot{telegram_bot_token}/sendMessage"

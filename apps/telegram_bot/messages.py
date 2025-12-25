@@ -5,6 +5,8 @@ HELP_COMMAND_SUCCESS = (
     "<code>/list</code> - list all your current subscriptions.\n"
     "<code>/delete</code> - remove token subscription. Write <code>/delete</code> btcusdt to remove specified subscription or <code>/delete</code> all to remove all subscriptions.\n"
     "<code>/market</code> - subscribe to impulsive token percent change. Write <code>/market</code> 80 to get notification ANY token reach 80% price change.\n"
+    "<code>/unsubscribe</code> - unsubscribe from market subscription.\n"
+
     "\n<i>If you want to follow futures market use <code>/tokenf</code> and <code>/marketf</code> commands instead.</i>"
 )
 
@@ -33,7 +35,7 @@ DELETE_COMMAND_HELP = "⚠️ EXAMPLES: \n<code>/delete</code> btcusdt\n<code>/d
 # /market /marketf
 MARKET_COMMAND_SUCCESS = "🎉 Market subscription created \n\nIf you want to change percent, write <code>/market</code> command again. \n\n 🗑️ The command <code>/unsubscribe</code> will remove price change subscription."
 MARKET_COMMAND_PERCENT_ERROR = "⚠️ Percent has to be > 50"
-MARKET_COMMAND_HELP = "⚠️ EXAMPLES: \n<code>/market</code> 70\n<code>/marketf</code> 90"
+MARKET_COMMAND_HELP = "⚠️ EXAMPLES: \n<code>/market</code> &#60; 70\n<code>/marketf</code> > 90"
 
 
 # /unsub

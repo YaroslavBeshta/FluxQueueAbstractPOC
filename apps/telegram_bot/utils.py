@@ -49,7 +49,16 @@ def build_token_subscriptions_message(subscriptions, market_type):
 
 
 def build_market_subscriptions_message(subscriptions, market_type):
-    leading_symbol = "✅"
-    if subscriptions[0].muted_1h_at or subscriptions[0].muted_24h_at:
-        leading_symbol = "🔇"
-    return f"{leading_symbol} <code>{market_type.upper()} {subscriptions[0].percent}%</code> market subscription \n"
+    header = f"\n<b>[{market_type.upper()}]</b>\n"
+    body = []
+    for subscription in subscriptions:
+        muted = ""
+        if subscription.muted_1h_at or subscription.muted_24h_at:
+            muted = "🔇"
+        body.append(
+            (
+                f" {INEQUALITY_SIGN_MAPPING[subscription.sign]} "
+                f"{subscription.percent}% {muted}"
+            )
+        )
+    return header + enumerate_list_and_join(body) + "\n"

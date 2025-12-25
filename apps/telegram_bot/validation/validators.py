@@ -55,15 +55,25 @@ def market_command_input_validator(message):
 
     market_type = MARKET_COMMAND_MAPPING[command[1:]]
 
-    percent, *_ = parameters
-    error_message, percent = validate_int_number(percent)
-    if error_message:
-        return error_message, []
+    sign = percent = None
+    try:
+        sign, percent, *_ = parameters
+        error_message, percent = validate_int_number(percent)
+        if error_message:
+            return error_message, []
+    except ValueError:
+        parameters = parameters.pop()
+        if ">" in parameters:
+            percent, *_ = parameters.split(">")
+            sign = ">"
+        if "<" in parameters:
+            percent, *_ = parameters.split("<")
+            sign = "<"
+    sign = INEQUALITY_SIGN_MAPPING.get(sign)
+    if not sign:
+        return messages.MARKET_COMMAND_HELP, []
 
-    # if percent < 50:
-    #     return messages.MARKET_COMMAND_PERCENT_ERROR, []
-
-    return None, (percent, market_type)
+    return None, (percent, market_type, sign)
 
 
 def delete_token_command_input_validator(message):

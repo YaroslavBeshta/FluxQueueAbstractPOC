@@ -14,6 +14,9 @@ run-notif:
 	python apps/notifications/main.py
 
 
+start:
+	docker compose -f dev-postgres-docker-compose.yml up -d --build
+
 run:
 	docker compose -f prod-postgres-docker-compose.yml up -d --build
 

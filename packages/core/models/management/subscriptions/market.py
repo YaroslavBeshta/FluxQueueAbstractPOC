@@ -22,20 +22,23 @@ def get_market_subscriptions(telegram_id: int = None, market_type: str = None, i
     return subscriptions
 
 
-def upsert_market_subscription(telegram_id: int, market_type: str, percent: int) -> None:
+def upsert_market_subscription(telegram_id: int, market_type: str, sign: str, percent: int) -> None:
     query = session.query(MarketSubscription)
     query = query.filter(
         MarketSubscription.telegram_id == telegram_id,
         MarketSubscription.market_type == market_type,
+        MarketSubscription.sign == sign,
     )
     subscription = query.first()
 
     if subscription:
         subscription.percent = percent
+        subscription.sign = sign
     else:
         subscription = MarketSubscription(
             telegram_id=telegram_id,
             market_type=market_type,
+            sign=sign,
             percent=percent
         )
 
