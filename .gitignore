@@ -130,6 +130,7 @@ dmypy.json
 
 
 postgres_data/
+postgres/*
 
 .env.*
 .DS_Store
