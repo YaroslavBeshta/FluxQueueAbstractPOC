@@ -6,13 +6,7 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-# Try loading .env.prod first, fallback to .env
-env_prod_path = Path('.env.prod')
-if env_prod_path.exists():
-    load_dotenv('.env.prod')
-else:
-    load_dotenv()
-
+load_dotenv()
 
 @contextmanager
 def session_scope():
