@@ -3,7 +3,9 @@ version: '3'
 services:
   ##### POSTGRES #################################
   db:
-    image: postgres:14
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
     volumes:
       - ./postgres/prod/postgres_data:/var/lib/postgresql/data/
     env_file:
