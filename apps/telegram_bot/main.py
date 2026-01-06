@@ -1,16 +1,14 @@
 import os
 
+from core.unit import load_environment_variables
 import telebot
-from dotenv import load_dotenv
-from requests.exceptions import ConnectionError, ReadTimeout
-
-from core.common.utils import send_telegram_log
 import commands
 from callback_handlers import resolve_callback
 
 
 def main():
-    load_dotenv()
+
+    load_environment_variables()
     API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 
     bot = telebot.TeleBot(API_TOKEN)

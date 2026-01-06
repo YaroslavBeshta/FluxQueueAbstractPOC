@@ -6,10 +6,6 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-# Load .env file but don't override existing environment variables
-# This ensures docker-compose environment variables take precedence
-load_dotenv(override=False)
-
 @contextmanager
 def session_scope():
     """Provide a transactional scope around a series of operations."""
