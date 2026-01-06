@@ -1,10 +1,9 @@
 import os
 from contextlib import contextmanager
-from pathlib import Path
 
-from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
 
 @contextmanager
 def session_scope():
@@ -29,14 +28,20 @@ def create_connection_string():
 
     # Validate that all required values are present
     if not all([_user, _password, _host, _port, _database]):
-        missing = [k for k, v in {
-            "POSTGRES_USER": _user,
-            "POSTGRES_PASSWORD": _password,
-            "POSTGRES_HOST": _host,
-            "POSTGRES_PORT": _port,
-            "POSTGRES_DB": _database
-        }.items() if not v]
-        raise ValueError(f"Missing required database environment variables: {', '.join(missing)}")
+        missing = [
+            k
+            for k, v in {
+                "POSTGRES_USER": _user,
+                "POSTGRES_PASSWORD": _password,
+                "POSTGRES_HOST": _host,
+                "POSTGRES_PORT": _port,
+                "POSTGRES_DB": _database,
+            }.items()
+            if not v
+        ]
+        raise ValueError(
+            f"Missing required database environment variables: {', '.join(missing)}"
+        )
 
     connection_string = f"{_driver}://{_user}:{_password}@{_host}:{_port}/{_database}"
     return connection_string

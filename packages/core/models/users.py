@@ -7,7 +7,7 @@ from core.models.base import Base
 
 
 class User(Base):
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
     telegram_id = Column(Integer, primary_key=True, unique=True)
     first_name = Column(Text, default=None)
@@ -17,7 +17,4 @@ class User(Base):
     is_bot = Column(Boolean)
     is_premium = Column(Boolean)
     disabled = Column(Boolean, default=False)
-    created_at = Column(
-        DateTime(timezone=True),
-        default=datetime.datetime.now()
-    )
+    created_at = Column(DateTime(timezone=True), default=datetime.datetime.now())

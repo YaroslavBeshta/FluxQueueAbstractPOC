@@ -7,7 +7,9 @@ from core.common.utils import send_telegram_log
 from core.models import MarketSubscription
 
 
-def get_market_subscriptions(telegram_id: int = None, market_type: str = None, include_muted: bool = False) -> list:
+def get_market_subscriptions(
+    telegram_id: int = None, market_type: str = None, include_muted: bool = False
+) -> list:
     query = session.query(MarketSubscription)
     if telegram_id:
         query = query.filter(MarketSubscription.telegram_id == telegram_id)
@@ -16,13 +18,15 @@ def get_market_subscriptions(telegram_id: int = None, market_type: str = None, i
     if not include_muted:
         query = query.filter(
             MarketSubscription.muted_1h_at == None,
-            MarketSubscription.muted_24h_at == None
+            MarketSubscription.muted_24h_at == None,
         )
     subscriptions = query.all()
     return subscriptions
 
 
-def upsert_market_subscription(telegram_id: int, market_type: str, sign: str, percent: int) -> None:
+def upsert_market_subscription(
+    telegram_id: int, market_type: str, sign: str, percent: int
+) -> None:
     query = session.query(MarketSubscription)
     query = query.filter(
         MarketSubscription.telegram_id == telegram_id,
@@ -36,10 +40,7 @@ def upsert_market_subscription(telegram_id: int, market_type: str, sign: str, pe
         subscription.sign = sign
     else:
         subscription = MarketSubscription(
-            telegram_id=telegram_id,
-            market_type=market_type,
-            sign=sign,
-            percent=percent
+            telegram_id=telegram_id, market_type=market_type, sign=sign, percent=percent
         )
 
     try:
@@ -51,7 +52,9 @@ def upsert_market_subscription(telegram_id: int, market_type: str, sign: str, pe
         session.close()
 
 
-def delete_market_subscription(telegram_id: int, market_type: str = None, *args) -> None:
+def delete_market_subscription(
+    telegram_id: int, market_type: str = None, *args
+) -> None:
     query = session.query(MarketSubscription)
     query = query.filter(MarketSubscription.telegram_id == telegram_id)
 
@@ -72,22 +75,22 @@ def unmute_market_subscriptions():
     query = query.filter(
         or_(
             MarketSubscription.muted_1h_at != None,
-            MarketSubscription.muted_24h_at != None
+            MarketSubscription.muted_24h_at != None,
         )
     )
 
     subscriptions = query.all()
     for subscription in subscriptions:
         if subscription.muted_1h_at:
-            now = datetime.datetime.now(
-                datetime.timezone.utc
-            ) - datetime.timedelta(hours=1)
+            now = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(
+                hours=1
+            )
             if now > subscription.muted_1h_at:
                 subscription.muted_1h_at = None
         if subscription.muted_24h_at:
-            now = datetime.datetime.now(
-                datetime.timezone.utc
-            ) - datetime.timedelta(hours=24)
+            now = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(
+                hours=24
+            )
             if now > subscription.muted_24h_at:
                 subscription.muted_24h_at = None
         try:
@@ -101,7 +104,7 @@ def unmute_market_subscription(telegram_id: int, market_type: str, *args) -> Non
     query = session.query(MarketSubscription)
     query = query.filter(
         MarketSubscription.telegram_id == telegram_id,
-        MarketSubscription.market_type == market_type
+        MarketSubscription.market_type == market_type,
     )
 
     subscription = query.first()
@@ -121,17 +124,15 @@ def mute_market_subscription(telegram_id: int, market_type: str, mute_time: str,
     query = session.query(MarketSubscription)
     query = query.filter(
         MarketSubscription.telegram_id == telegram_id,
-        MarketSubscription.market_type == market_type
+        MarketSubscription.market_type == market_type,
     )
 
     subscription = query.first()
     if subscription:
         if mute_time == "1h":
-            subscription.muted_1h_at = datetime.datetime.now(
-                datetime.timezone.utc)
+            subscription.muted_1h_at = datetime.datetime.now(datetime.timezone.utc)
         if mute_time == "24h":
-            subscription.muted_24h_at = datetime.datetime.now(
-                datetime.timezone.utc)
+            subscription.muted_24h_at = datetime.datetime.now(datetime.timezone.utc)
 
         try:
             session.add(subscription)
