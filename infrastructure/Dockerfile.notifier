@@ -1,4 +1,4 @@
-# Use a stable, small base
+# Dockerfile for Notifications Service
 FROM python:3.13-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -21,25 +21,20 @@ COPY requirements.txt requirements.txt
 # 2) Upgrade pip and basic build tools
 RUN pip install --upgrade pip wheel setuptools
 
-# 3) Install requirements (if you actually use requirements.txt)
-#    If you manage deps only with pyproject, you can delete this line.
+# 3) Install requirements
 RUN pip install -r requirements.txt
 
-# 4) Now copy your importable packages and install your project
-#    This assumes your real code lives in /packages per your layout
+# 4) Copy your importable packages and install your project
 COPY packages/ packages/
 RUN pip install -e .
 
 # 5) Copy the rest of the app code and configs
 COPY apps/ apps/
 COPY alembic.ini ./alembic.ini
-# If your alembic folder lives under apps/alembic, bring it in to /app/alembic
-# Adjust or remove this if your project uses another path
 COPY apps/alembic/ ./alembic/
 
-# Do not bake secrets into the image in production. Prefer env vars.
-# Kept here because your original had it.
-COPY .env .env
+# Do not bake secrets into the image - use environment variables instead
+# Environment-specific .env files should be mounted or passed via env_file in docker-compose
 
 ENV PYTHONPATH=/app
 
@@ -47,3 +42,5 @@ COPY ./docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["apps/notifications/main.py"]
+

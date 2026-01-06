@@ -11,6 +11,24 @@ This repository contains a proof of concept for an orchestration structure that 
 
 Research teams need consistent, traceable signals across fast moving markets. Ad hoc scripts do not scale, and monoliths resist change. The goal is a composable pipeline that isolates concerns, scales hot spots independently, and preserves lineage from raw tick to action call.
 
+## Project Structure
+
+```
+FluxQueueAbstractPOC/
+├── infrastructure/          # Dockerfiles for each service
+│   ├── Dockerfile.postgres
+│   ├── Dockerfile.telegram_bot
+│   └── Dockerfile.notifier
+├── apps/                    # Application code
+│   ├── telegram_bot/        # Telegram bot service
+│   ├── notifications/      # Notifications service
+│   └── alembic/            # Database migrations
+├── packages/                # Shared packages
+├── docker-compose.dev.yml   # Development environment
+├── docker-compose.prod.yml  # Production environment
+└── ...
+```
+
 ## Components
 
 1. Data reading service
@@ -43,3 +61,116 @@ Each message carries schema version, source, and processing step. Access is role
 ## Roadmap
 
 Add richer feature store integration, more indicators, stronger model governance, and end to end backtesting with reproducible snapshots. Harden error handling, disaster recovery, and SLOs. Again, do not use this POC in production.
+
+## Development Setup
+
+> **Note:** The project now uses `docker-compose.dev.yml` and `docker-compose.prod.yml` for proper dev/prod separation. The old `dev-postgres-docker-compose.yml` and `prod-postgres-docker-compose.yml` files are deprecated but kept for backward compatibility.
+
+### Prerequisites
+- Docker and Docker Compose
+- Python 3.13+ (for local development)
+
+### Environment Configuration
+
+1. **Development Environment:**
+   ```bash
+   cp env.dev.template .env.dev
+   # Edit .env.dev with your development credentials
+   ```
+
+2. **Production Environment:**
+   ```bash
+   cp env.prod.template .env.prod
+   # Edit .env.prod with your production credentials
+   # IMPORTANT: Use strong passwords and secure tokens!
+   ```
+
+### Running the Application
+
+#### Development Mode
+
+Start all services in development mode (with hot-reload via volume mounts):
+```bash
+make dev-up
+```
+
+View logs:
+```bash
+make dev-logs
+```
+
+Stop services:
+```bash
+make dev-stop
+# or
+make dev-down  # stops and removes containers
+```
+
+#### Production Mode
+
+Start all services in production mode:
+```bash
+make prod-up
+```
+
+View logs:
+```bash
+make prod-logs
+```
+
+Stop services:
+```bash
+make prod-stop
+# or
+make prod-down  # stops and removes containers
+```
+
+### Local Development (without Docker)
+
+Install dependencies:
+```bash
+make install
+```
+
+Run migrations:
+```bash
+make migrate
+```
+
+Run services locally:
+```bash
+make run-tg      # Telegram bot
+make run-notif   # Notifications service
+```
+
+### Available Make Commands
+
+- `make install` - Install Python dependencies
+- `make migrate` - Run database migrations
+- `make make-migration` - Create a new migration
+- `make dev-up` - Start development environment
+- `make dev-down` - Stop and remove development containers
+- `make dev-logs` - View development logs
+- `make dev-stop` - Stop development containers
+- `make dev-restart` - Restart development containers
+- `make prod-up` - Start production environment
+- `make prod-down` - Stop and remove production containers
+- `make prod-logs` - View production logs
+- `make prod-stop` - Stop production containers
+- `make prod-restart` - Restart production containers
+
+### Environment Differences
+
+**Development:**
+- Uses `postgres_data/` directory for database storage
+- Source code is mounted as volumes for hot-reload
+- Uses `.env.dev` for configuration
+- Database exposed on port `5434` (all interfaces)
+
+**Production:**
+- Uses `postgres/prod/postgres_data/` directory for database storage
+- No volume mounts (uses built Docker images)
+- Uses `.env.prod` for configuration
+- Database exposed on port `5434` (localhost only: `127.0.0.1:5434`)
+- All services have `restart: always` policy
+- Custom PostgreSQL image with migration support

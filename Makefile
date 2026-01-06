@@ -13,8 +13,38 @@ run-tg:
 run-notif:
 	python apps/notifications/main.py
 
-run:
-	docker compose -f prod-postgres-docker-compose.yml up -d --build
+# Development commands
+dev-up:
+	docker compose -f docker-compose.dev.yml up -d --build
 
-stop:
-	docker compose -f prod-postgres-docker-compose.yml stop
+dev-down:
+	docker compose -f docker-compose.dev.yml down
+
+dev-logs:
+	docker compose -f docker-compose.dev.yml logs -f
+
+dev-stop:
+	docker compose -f docker-compose.dev.yml stop
+
+dev-restart:
+	docker compose -f docker-compose.dev.yml restart
+
+# Production commands
+prod-up:
+	docker compose -f docker-compose.prod.yml up -d --build
+
+prod-down:
+	docker compose -f docker-compose.prod.yml down
+
+prod-logs:
+	docker compose -f docker-compose.prod.yml logs -f
+
+prod-stop:
+	docker compose -f docker-compose.prod.yml stop
+
+prod-restart:
+	docker compose -f docker-compose.prod.yml restart
+
+# Legacy aliases (for backward compatibility)
+start: prod-up
+stop: prod-stop

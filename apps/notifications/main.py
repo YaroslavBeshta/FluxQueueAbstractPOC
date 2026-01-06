@@ -1,4 +1,3 @@
-import datetime
 import time
 
 import schedule
@@ -6,9 +5,11 @@ import schedule
 from core.models.management.subscriptions.market import unmute_market_subscriptions
 from core.models.management.subscriptions.token import unmute_token_subscriptions
 import notifications_generators
+from core.unit import load_environment_variables
 
 
 def main():
+    load_environment_variables()
     schedule.every(1).minutes.do(
         notifications_generators.generate_spot_token_notifications
     )

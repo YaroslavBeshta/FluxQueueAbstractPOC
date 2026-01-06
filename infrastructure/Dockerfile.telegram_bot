@@ -1,0 +1,46 @@
+# Dockerfile for Telegram Bot Service
+FROM python:3.13-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+
+# System deps you may need for wheels like psycopg, lxml, etc.
+# Add or remove libs as needed.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# 1) Copy only dependency metadata first for better Docker caching
+COPY pyproject.toml pyproject.toml
+COPY requirements.txt requirements.txt
+
+# 2) Upgrade pip and basic build tools
+RUN pip install --upgrade pip wheel setuptools
+
+# 3) Install requirements
+RUN pip install -r requirements.txt
+
+# 4) Copy your importable packages and install your project
+COPY packages/ packages/
+RUN pip install -e .
+
+# 5) Copy the rest of the app code and configs
+COPY apps/ apps/
+COPY alembic.ini ./alembic.ini
+COPY apps/alembic/ ./alembic/
+
+# Do not bake secrets into the image - use environment variables instead
+# Environment-specific .env files should be mounted or passed via env_file in docker-compose
+
+ENV PYTHONPATH=/app
+
+COPY ./docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["apps/telegram_bot/main.py"]
+

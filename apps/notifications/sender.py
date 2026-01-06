@@ -1,20 +1,15 @@
 import os
 
 import requests
-from dotenv import load_dotenv
-
-load_dotenv()
-TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 
 
 def send_telegram(chat_id, message, reply_markup=None):
-    telegram_bot_token = TELEGRAM_BOT_TOKEN
+    telegram_bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
     payload = {
-        'chat_id': chat_id,
-        'text': message,
-        'parse_mode': 'HTML',
+        "chat_id": chat_id,
+        "text": message,
+        "parse_mode": "HTML",
         "disable_web_page_preview": True,
-
     }
     if reply_markup:
         payload["reply_markup"] = reply_markup
