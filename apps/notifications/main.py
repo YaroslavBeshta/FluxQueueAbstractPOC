@@ -4,12 +4,18 @@ import schedule
 
 from core.models.management.subscriptions.market import unmute_market_subscriptions
 from core.models.management.subscriptions.token import unmute_token_subscriptions
+from core.common.logger import setup_logging, get_logger
 import notifications_generators
 from core.unit import load_environment_variables
+
+# Set up logging
+setup_logging(service_name="notifications")
+logger = get_logger(__name__)
 
 
 def main():
     load_environment_variables()
+    logger.info("Starting notifications service...")
     schedule.every(1).minutes.do(
         notifications_generators.generate_spot_token_notifications
     )
