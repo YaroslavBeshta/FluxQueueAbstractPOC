@@ -14,6 +14,7 @@ def session_scope():
         session.commit()
     except Exception:
         session.rollback()
+        raise  # Re-raise the exception after rollback
     finally:
         session.close()
 
@@ -54,4 +55,4 @@ engine = create_engine(
     pool_pre_ping=True,
 )
 Session = sessionmaker(bind=engine)
-session = Session()
+# DO NOT create a global session - use session_scope() context manager instead
